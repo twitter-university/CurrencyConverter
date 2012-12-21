@@ -33,7 +33,8 @@ public class GoogleCurrencyConverter implements CurrencyConverter {
 		this.httpclient = new DefaultHttpClient();
 	}
 
-	public synchronized double getConversionRate(String fromCurrencyCode,
+	@Override
+    public synchronized double getConversionRate(String fromCurrencyCode,
 			String toCurrencyCode) throws CurrencyConverterException {
 		try {
 			String url = String.format(this.urlFormat, fromCurrencyCode,
@@ -60,13 +61,12 @@ public class GoogleCurrencyConverter implements CurrencyConverter {
 				throw new CurrencyConverterException("Could not find ["
 						+ resultPattern.toString() + "] in response to [" + url
 						+ "]");
-			} else {
-				if (entity != null) {
-					entity.consumeContent();
-				}
-				throw new CurrencyConverterException("Got [" + statusCode
-						+ "] in response to [" + url + "]");
 			}
+            if (entity != null) {
+            	entity.consumeContent();
+            }
+            throw new CurrencyConverterException("Got [" + statusCode
+            		+ "] in response to [" + url + "]");
 		} catch (Exception e) {
 			throw new CurrencyConverterException(
 					"Failed to get conversion rate from " + fromCurrencyCode
